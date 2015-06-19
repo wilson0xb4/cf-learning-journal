@@ -1,0 +1,189 @@
+/*
+colors from http://www.colorcombos.com/color-schemes/7095/ColorCombo7095.html
+
+form css from treehouse tutorial
+
+hr css from html5 boilerplate
+*/
+
+*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(221, 221, 221);
+  font-family: sans-serif;
+  color: rgb(47, 52, 58);
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: rgb(65, 170, 196);
+  margin: 0 0 50px 0;
+  padding: 0;
+  box-shadow: 0px 3px 5px rgba(100, 100, 100, 0.49);
+  text-align: center;
+}
+
+nav {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background-color: rgba(113, 125, 140, 0.4);
+}
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+nav li{
+  display: inline-block;
+}
+
+a:link, a:visited {
+  color: rgb(65, 170, 196);
+  text-decoration: none;
+}
+a:hover, a:active {
+  text-decoration: underline;
+}
+
+header a:link, header a:visited, header a:active, header a:hover {
+  text-decoration: none;
+  color: rgb(47, 52, 58);
+}
+
+nav a:link, nav a:visited {
+    display: block;
+    width: 100%;
+    font-weight: bold;
+    color: #f4f7f8;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+nav a:hover, nav a:active {
+    background-color: rgb(65, 170, 196);
+}
+
+footer {
+  margin-top: 50px;
+  text-align: center;
+  padding: 0 5%;
+  font-size: .75em;
+
+}
+
+form, section, article {
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  background: #f4f7f8;
+  border-radius: 8px;
+}
+
+#entries {
+  list-style: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  /*line-height: 0;*/
+  /*color: rgb(189, 182, 156);*/
+  /*text-shadow: 0.1em 0.01em 0.2em rgba(63,107,169, 0.5)*/
+}
+
+h1 {
+  margin: 0;
+  padding: 45px 0;
+  font-size: 2em;
+}
+
+h2,h3 {
+  font-size: 1.2em;
+}
+
+h4.date {
+  font-size: .8em;
+  margin-top: -15px;
+}
+
+article p {
+  margin: 25px 0;
+}
+
+input[type="text"],
+textarea {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  font-size: 16px;
+  height: auto;
+  margin: 0;
+  outline: 0;
+  padding: 15px;
+  width: 100%;
+  background-color: #e8eeef;
+  color: #8a97a0;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03) inset;
+  margin-bottom: 30px;
+}
+
+button {
+  padding: 19px 39px 18px 39px;
+  color: #FFF;
+  background-color: #4bc970;
+  font-size: 18px;
+  text-align: center;
+  font-style: normal;
+  border-radius: 5px;
+  width: 100%;
+  border: 1px solid #3ac162;
+  border-width: 1px 1px 3px;
+  box-shadow: 0 -1px 0 rgba(255,255,255,0.1) inset;
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px
+  solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+
+  color: rgb(65, 170, 196);
+  background-color: rgb(65, 170, 196);
+  border-color: rgb(65, 170, 196);
+  border: 0;
+}
+
+
+@media screen and (min-width: 480px) {
+
+  form, section, article {
+    max-width: 480px;
+  }
+
+}
+
+@media screen and (min-width: 768px) {
+
+  form, section, article {
+    max-width: 768px;
+  }
+
+}
