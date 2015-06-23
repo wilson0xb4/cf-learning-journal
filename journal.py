@@ -11,6 +11,11 @@ import datetime
 
 Base = declarative_base()
 
+# make a module-level constant for the connection URI
+DATABASE_URL = os.environ.get(
+    'DATABASE_URL',
+    'postgresql://ajw@localhost:5432/learning-journal')
+
 
 class Entry(Base):
     __tablename__ = 'entries'
@@ -18,7 +23,13 @@ class Entry(Base):
     title = sa.Column(sa.Unicode(127), nullable=False)
     text = sa.Column(sa.UnicodeText, nullable=False)
     created = sa.Column(
-        sa.DateTime, nullable=False, default=datetime.datetime.utcnow)
+        sa.DateTime, nullable=False, default=datetime.datetime.utcnow
+    )
+
+
+class init_db():
+    engine = sa.create_engine(DATABASE_URL, echo=True)
+    Base.metadata.create_all(engine)
 
 
 @view_config(route_name='home', renderer='string')
