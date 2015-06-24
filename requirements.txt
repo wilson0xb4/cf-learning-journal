@@ -1,6 +1,11 @@
+gnureadline==6.3.3
+ipython==3.2.0
+Jinja2==2.7.3
+MarkupSafe==0.23
 PasteDeploy==1.5.2
 psycopg2==2.6.1
 pyramid==1.5.7
+pyramid-jinja2==2.5
 pyramid-tm==0.12
 repoze.lru==0.6
 SQLAlchemy==1.0.5
