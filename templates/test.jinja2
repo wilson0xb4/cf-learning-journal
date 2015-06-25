@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html><head><title>What a Great Demo</title></head>
+<body>
+<h1>This is a page</h1>
+<p>Look at it, its sooo {{ one }}!</p>
+
+<a href="{{ request.route_url('other', special_val=42) }}">click me</a>
+
+<ol>
+    {%for thing in stuff %}
+        <li>{{ thing }}</li>
+    {%endfor %}
+</ol>
+</body>
+</html>
