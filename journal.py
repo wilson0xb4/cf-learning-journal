@@ -49,20 +49,11 @@ class init_db():
     engine = sa.create_engine(DATABASE_URL, echo=True)
     Base.metadata.create_all(engine)
 
-from pyramid.httpexceptions import HTTPNotFound
 
-
-@view_config(route_name='home', renderer='templates/test.jinja2')
-def home(request):
-    # import pdb; pdb.set_trace()
-    return {'one': 'two', 'stuff': ['a', 'b', 'c']}
-
-
-@view_config(route_name='other', renderer='string')
-def other(request):
-    import pdb; pdb.set_trace()
-    return request.matchdict
-
+@view_config(route_name='home', renderer='templates/list.jinja2')
+def list_view(request):
+    entries = Entry.all()
+    return {'entries': entries}
 
 def main():
     """Create a configured wsgi app"""
