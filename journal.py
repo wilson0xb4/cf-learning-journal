@@ -38,6 +38,12 @@ class Entry(Base):
         session.add(instance)
         return instance
 
+    @classmethod
+    def all(cls, session=None):
+        if session is None:
+            session = DBSession
+        return session.query(cls).order_by(cls.created.desc()).all()
+
 
 class init_db():
     engine = sa.create_engine(DATABASE_URL, echo=True)
