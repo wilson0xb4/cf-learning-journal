@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Learning Journal</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+    <header>
+      <h1><a href="index.html">Learning Journal</a></h1>
+
+      <nav>
+        <ul>
+          <li><a href="index.html">Entries</a></li>
+          <li><a href="new_entry.html">New Entry</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section>
+      {% block body %}{% endblock %}
+    </section>
+
+    <footer>
+      <p>
+        Learning Journal for the Python Development Accelerator<br>
+        at <a href="https://www.codefellows.org">Code Fellows</a>
+      </p>
+
+      <hr>
+      <p>&copy; 2015 Andrew Wilson</p>
+    </footer>
+  </body>
+</html>
