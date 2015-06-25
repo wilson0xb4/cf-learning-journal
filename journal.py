@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
+import datetime
+
 from pyramid.config import Configurator
 from pyramid.view import view_config
 from waitress import serve
-
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
-import datetime
 
 Base = declarative_base()
 
@@ -31,10 +31,19 @@ class init_db():
     engine = sa.create_engine(DATABASE_URL, echo=True)
     Base.metadata.create_all(engine)
 
+from pyramid.httpexceptions import HTTPNotFound
 
-@view_config(route_name='home', renderer='string')
+
+@view_config(route_name='home', renderer='templates/test.jinja2')
 def home(request):
-    return "Hello World"
+    # import pdb; pdb.set_trace()
+    return {'one': 'two', 'stuff': ['a', 'b', 'c']}
+
+
+@view_config(route_name='other', renderer='string')
+def other(request):
+    import pdb; pdb.set_trace()
+    return request.matchdict
 
 
 def main():
@@ -47,7 +56,9 @@ def main():
     config = Configurator(
         settings=settings
     )
+    config.include('pyramid_jinja2')
     config.add_route('home', '/')
+    config.add_route('other', '/other/{special_val}')
     config.scan()
     app = config.make_wsgi_app()
     return app
