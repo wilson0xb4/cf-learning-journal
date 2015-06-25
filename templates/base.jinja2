@@ -5,12 +5,22 @@
     <title>Learning Journal</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/static/style.css">
   </head>
   <body>
 
     <header>
       <h1><a href="index.html">Learning Journal</a></h1>
+
+<aside id="user-controls">
+
+    {% if not request.authenticated_userid %}
+      <a href="{{ request.route_url('login') }}">log in</a>
+    {% else %}
+      <a href="{{ request.route_url('logout') }}">log out</a>
+    {% endif %}
+
+  </aside>
 
       <nav>
         <ul>
