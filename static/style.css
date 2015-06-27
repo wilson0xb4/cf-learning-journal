@@ -69,7 +69,7 @@ nav a:link, nav a:visited {
     text-transform: uppercase;
 }
 
-nav a:hover, nav a:active {
+nav a:hover, nav a:active, .current {
     background-color: rgb(65, 170, 196);
 }
 
@@ -111,6 +111,10 @@ h2,h3 {
   font-size: 1.2em;
 }
 
+h3 a:hover {
+  text-decoration: none
+}
+
 h4.date {
   font-size: .8em;
   margin-top: -15px;
@@ -121,6 +125,7 @@ article p {
 }
 
 input[type="text"],
+input[type="password"],
 textarea {
   background: rgba(255,255,255,0.1);
   border: none;
@@ -136,6 +141,7 @@ textarea {
   margin-bottom: 30px;
 }
 
+input[type="submit"],
 button {
   padding: 19px 39px 18px 39px;
   color: #FFF;
