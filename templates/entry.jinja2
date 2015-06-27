@@ -1,0 +1,20 @@
+{% extends "base.jinja2" %}
+{% block body %}
+
+    <article>
+      <h3>{{ data.title }}</h3>
+      <h4 class="date">{{ data.created.strftime('%b. %d, %Y') }}</h4>
+
+      <p>
+            {{ data.text }}
+      </p>
+
+      <footer>
+            <a href="{{ request.route_url('entry_form:entry_id', entry_id=data.id) }}">edit this entry</a> |
+            Last edited: {{ data.created }} | entry_id: {{ data.id }} |
+            <a href="#top">top</a>
+      </footer>
+
+    </article>
+
+{% endblock %}

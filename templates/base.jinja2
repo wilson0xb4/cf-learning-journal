@@ -10,29 +10,24 @@
   <body>
 
     <header>
-      <h1><a href="index.html">Learning Journal</a></h1>
-
-<aside id="user-controls">
-
-    {% if not request.authenticated_userid %}
-      <a href="{{ request.route_url('login') }}">log in</a>
-    {% else %}
-      <a href="{{ request.route_url('logout') }}">log out</a>
-    {% endif %}
-
-  </aside>
+      <h1><a href="{{ request.route_url('home') }}">Learning Journal</a></h1>
 
       <nav>
         <ul>
-          <li><a href="index.html">Entries</a></li>
-          <li><a href="new_entry.html">New Entry</a></li>
+          <li {% if current=='list' %}class="current"{% endif %}><a href="{{ request.route_url('home') }}">Entries</a></li>
+
+        {% if not request.authenticated_userid %}
+          <li {% if current=='login' %}class="current"{% endif %}><a href="{{ request.route_url('login') }}">log in</a></li>
+        {% else %}
+          <li {% if current=='add' %}class="current"{% endif %}><a href="{{ request.route_url('entry_form') }}">New Entry</a></li>
+          <li><a href="{{ request.route_url('logout') }}">log out</a></li>
+        {% endif %}
+
         </ul>
       </nav>
     </header>
 
-    <section>
-      {% block body %}{% endblock %}
-    </section>
+    {% block body %}{% endblock %}
 
     <footer>
       <p>
