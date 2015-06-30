@@ -10,7 +10,10 @@
       </p>
 
       <footer>
-            <a href="{{ request.route_url('entry_form:entry_id', entry_id=data.id) }}">edit this entry</a> |
+            {% if request.authenticated_userid %}
+              <a href="{{ request.route_url('entry_form:entry_id', entry_id=data.id) }}">edit this entry</a> |
+            {% endif %}
+
             Last edited: {{ data.created }} | entry_id: {{ data.id }} |
             <a href="#top">top</a>
       </footer>
