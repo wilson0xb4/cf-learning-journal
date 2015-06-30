@@ -7,37 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from pyramid import testing
 from cryptacular.bcrypt import BCRYPTPasswordManager
 
-TEST_DATABASE_URL = os.environ.get(
-    'DATABASE_URL',
-    'postgresql://ajw@localhost:5432/test-learning-journal'
-)
-os.environ['DATABASE_URL'] = TEST_DATABASE_URL
-os.environ['TESTING'] = "True"
-
 import journal
-
-
-@pytest.fixture(scope='session')
-def connection(request):
-    engine = create_engine(TEST_DATABASE_URL)
-    journal.Base.metadata.create_all(engine)
-    connection = engine.connect()
-    journal.DBSession.registry.clear()
-    journal.DBSession.configure(bind=connection)
-    journal.Base.metadata.bind = engine
-    request.addfinalizer(journal.Base.metadata.drop_all)
-    return connection
-
-
-@pytest.fixture()
-def db_session(request, connection):
-    from transaction import abort
-    trans = connection.begin()
-    request.addfinalizer(trans.rollback)
-    request.addfinalizer(abort)
-
-    from journal import DBSession
-    return DBSession
 
 
 def test_write_entry(db_session):
@@ -111,31 +81,12 @@ def test_read_entries_one(db_session):
         assert isinstance(entry, journal.Entry)
 
 
-@pytest.fixture()
-def app():
-    from journal import main
-    from webtest import TestApp
-    app = main()
-    return TestApp(app)
-
-
 def test_empty_listing(app):
     response = app.get('/')
     assert response.status_code == 200
     actual = response.body
     expected = 'No entries here so far'
     assert expected in actual
-
-
-@pytest.fixture()
-def entry(db_session):
-    entry = journal.Entry.write(
-        title='Test Title',
-        text='Test Entry Text',
-        session=db_session
-    )
-    db_session.flush()
-    return entry
 
 
 def test_listing(app, entry):
@@ -208,7 +159,7 @@ def test_do_login_missing_params(auth_req):
             do_login(auth_req)
 
 
-INPUT_BTN = '<input type="submit" value="Share" name="Share">'
+INPUT_BTN = 'log out</a></li>'
 
 
 def login_helper(username, password, app):
@@ -233,6 +184,7 @@ def test_login_success(app):
     response = redirect.follow()
     assert response.status_code == 200
     actual = response.body
+    print(actual)
     assert INPUT_BTN in actual
 
 
