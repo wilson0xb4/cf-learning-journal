@@ -2,7 +2,7 @@
 {% block body %}
 
 {% if request.authenticated_userid %}
-    <form action="{{ request.route_url('add') }}" method="POST">
+    <form action="{{ request.route_url(current, entry_id=data.id) }}" method="POST">
 
       <h3>Add Journal Entry</h3>
 
@@ -16,9 +16,9 @@
       <p>Last updated on: {{ data.created }}</p>
       {% endif %}
 
-      <input type="hidden" id="entry_id" value="{{ data.id }}">
+      <input type="hidden" id="entry_id" name="entry_id" value="{{ data.id }}">
 
-      <button type="submit">Update Entry</button>
+      <button type="submit">{{ current|capitalize }} Entry</button>
 
     </form>
 
