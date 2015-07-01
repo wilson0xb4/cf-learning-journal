@@ -50,11 +50,6 @@ class Entry(Base):
         if session is None:
             session = DBSession
         row = session.query(cls).get(entry_id)
-        # row.update({
-        #     'title': title,
-        #     'text': text,
-        #     'created': datetime.datetime.utcnow
-        # })
 
         row.title = title
         row.text = text
@@ -88,9 +83,14 @@ def list_view(request):
 
 @view_config(route_name='entry', renderer='templates/entry.jinja2')
 def entry_view(request):
+
     entry_id = request.matchdict['entry_id']
     data = Entry.get_entry(entry_id)
-    return {'data': data, 'current': 'entry'}
+
+    if data is None:
+        return HTTPFound(request.route_url('404'))
+
+    return {'data': data}
 
 
 @view_config(route_name='add', renderer='templates/entry_form.jinja2')
@@ -114,13 +114,13 @@ def add_entry(request):
     renderer='templates/entry_form.jinja2')
 def update_entry(request):
 
-    try:
+    if request.authenticated_userid:
+
         entry_id = request.matchdict['entry_id']
         data = Entry.get_entry(entry_id)
-    except:
-        data = {}
 
-    if request.authenticated_userid:
+        if data is None:
+            return HTTPFound(request.route_url('404'))
 
         if request.method == 'POST':
             entry_id = request.params.get('entry_id')
@@ -128,9 +128,16 @@ def update_entry(request):
             text = request.params.get('text', 'not provided?')
             Entry.update_entry(entry_id=entry_id, title=title, text=text)
             return HTTPFound(request.route_url('home'))
+
         return {'data': data, 'current': 'update'}
 
     return HTTPFound(request.route_url('login'))
+
+
+@view_config(route_name='404', renderer='templates/404.jinja2')
+def error_404_view(request):
+    # TODO: set proper headers
+    return {}
 
 
 @view_config(context=DBAPIError)
@@ -232,6 +239,10 @@ def main():
     config.add_route('login', '/login')
     config.add_route('login:page', '/login/{page}')
     config.add_route('logout', '/logout')
+
+    # error routes
+    config.add_route('404', '/404')
+
     config.scan()
     app = config.make_wsgi_app()
     return app

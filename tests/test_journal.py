@@ -97,6 +97,7 @@ def test_read_entries_one(db_session):
     text_template = "Entry Text {}"
 
     # write three entries, with order clear in the title and text
+    import pdb; pdb.set_trace()
     for x in range(3):
         journal.Entry.write(
             title=title_template.format(x),
@@ -109,6 +110,36 @@ def test_read_entries_one(db_session):
     assert entries[0].title > entries[1].title > entries[2].title
     for entry in entries:
         assert isinstance(entry, journal.Entry)
+
+
+def test_view_entry_valid(app):
+    """View entry that exists."""
+    assert False
+
+
+def test_detail_view_invalid_entry(app):
+    """View entry that does not exist."""
+    response = app.get('/entry/999')
+    assert response.status_code == 404
+    actual = response.body
+    for field in ['title', 'text']:
+        expected = getattr(entry, field, 'absent')
+        assert expected in actual
+
+
+def test_update_view_invalid_entry(app):
+    """View entry that does not exist."""
+    response = app.get('/update/999')
+    assert response.status_code == 404
+    actual = response.body
+    for field in ['title', 'text']:
+        expected = getattr(entry, field, 'absent')
+        assert expected in actual
+
+
+def test_view_update_form_valid(app):
+    """Check if the update form is correctly populated with the entry"""
+    assert False
 
 
 def test_empty_listing(app):
@@ -128,6 +159,22 @@ def test_listing(app, entry):
         assert expected in actual
 
 
+def test_post_to_add_view_no_auth(app):
+    """Try to add a post without being authenticated."""
+    test_start_as_anonymous(app)
+    entry_data = {
+        'title': 'Hello there',
+        'text': 'This is a post'
+    }
+    response = app.post('/add', params=entry_data, status='3*')
+    assert response.status_code == 302
+    redirected = response.follow()
+    actual = redirected.body
+    assert '<h2>Login</h2>' in actual
+    for expected in entry_data.values():
+        assert expected not in actual
+
+
 def test_post_to_add_view(app):
     test_login_success(app)
     entry_data = {
@@ -137,7 +184,6 @@ def test_post_to_add_view(app):
     response = app.post('/add', params=entry_data, status='3*')
     redirected = response.follow()
     actual = redirected.body
-    print actual
     for expected in entry_data.values():
         assert expected in actual
 

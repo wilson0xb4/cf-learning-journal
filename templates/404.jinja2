@@ -1,0 +1,14 @@
+{% extends "base.jinja2" %}
+{% block body %}
+
+    <section>
+
+      <h3>404 Not Found</h3>
+
+      <p>The entry you requested does not exist.</p>
+
+      <p>Return to the <a href="{{ request.route_url('home') }}">homepage</a>.</p>
+
+    </section>
+
+{% endblock %}

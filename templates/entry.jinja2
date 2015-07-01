@@ -5,7 +5,7 @@
       <h3>{{ data.title }}</h3>
       <h4 class="date">{{ data.created.strftime('%b. %d, %Y') }}</h4>
 
-        {{ data.text }}
+        {{ data.text|safe }}
 
       <footer>
             {% if request.authenticated_userid %}
