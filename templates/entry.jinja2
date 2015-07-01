@@ -11,7 +11,7 @@
 
       <footer>
             {% if request.authenticated_userid %}
-              <a href="{{ request.route_url('entry_form:entry_id', entry_id=data.id) }}">edit this entry</a> |
+              <a href="{{ request.route_url('update', entry_id=data.id) }}">edit this entry</a> |
             {% endif %}
 
             Last edited: {{ data.created }} | entry_id: {{ data.id }} |
