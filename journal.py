@@ -93,11 +93,22 @@ def entry_view(request):
     return {'data': data, 'current': 'entry'}
 
 
-@view_config(route_name='entry_form', renderer='templates/entry_form.jinja2')
+@view_config(route_name='add', renderer='templates/entry_form.jinja2')
+def add_entry(request):
+
+    if request.method == 'POST':
+        title = request.params.get('title')
+        text = request.params.get('text')
+        Entry.write(title=title, text=text)
+        return HTTPFound(request.route_url('home'))
+
+    return {'data': {}, 'current': 'add'}
+
+
 @view_config(
-    route_name='entry_form:entry_id',
+    route_name='update',
     renderer='templates/entry_form.jinja2')
-def entry_form_view(request):
+def update_entry(request):
 
     try:
         entry_id = request.matchdict['entry_id']
@@ -105,24 +116,13 @@ def entry_form_view(request):
     except:
         data = {}
 
-    return {'data': data, 'current': 'add'}
-
-
-@view_config(route_name='add', request_method='POST')
-def add_entry(request):
-    title = request.params.get('title')
-    text = request.params.get('text')
-    Entry.write(title=title, text=text)
-    return HTTPFound(request.route_url('home'))
-
-
-@view_config(route_name='update', request_method='POST')
-def update_entry(request):
-    entry_id = request.params.get('entry_id')
-    title = request.params.get('title', 'not provided?')
-    text = request.params.get('text', 'not provided?')
-    Entry.update_entry(entry_id=entry_id, title=title, text=text)
-    return HTTPFound(request.route_url('home'))
+    if request.method == 'POST':
+        entry_id = request.params.get('entry_id')
+        title = request.params.get('title', 'not provided?')
+        text = request.params.get('text', 'not provided?')
+        Entry.update_entry(entry_id=entry_id, title=title, text=text)
+        return HTTPFound(request.route_url('home'))
+    return {'data': data, 'current': 'update'}
 
 
 @view_config(context=DBAPIError)
@@ -157,7 +157,8 @@ def login(request):
             headers = remember(request, username)
             return HTTPFound(request.route_url(next_page), headers=headers)
 
-    return {'error': error, 'username': username, 'next_page': next_page, 'current': 'login'}
+    return {'error': error, 'username': username,
+            'next_page': next_page, 'current': 'login'}
 
 
 @view_config(route_name='logout')
@@ -217,12 +218,12 @@ def main():
     config.add_route('entry', '/entry/{entry_id}')
 
     # routes for viewing the form
-    config.add_route('entry_form', '/entry_form')
-    config.add_route('entry_form:entry_id', '/entry_form/{entry_id}')
+    # config.add_route('entry_form', '/entry_form')
+    # config.add_route('entry_form:entry_id', '/entry_form/{entry_id}')
 
     # routes to process add / update
     config.add_route('add', '/add')
-    config.add_route('update', '/update')
+    config.add_route('update', '/update/{entry_id}')
 
     config.add_route('login', '/login')
     config.add_route('login:page', '/login/{page}')
