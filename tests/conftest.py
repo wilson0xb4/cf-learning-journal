@@ -9,7 +9,6 @@ TEST_DATABASE_URL = os.environ.get(
     'postgresql://ajw@localhost:5432/test-learning-journal'
 )
 os.environ['DATABASE_URL'] = TEST_DATABASE_URL
-os.environ['TESTING'] = "True"
 
 
 @pytest.fixture(scope='session')
@@ -44,11 +43,6 @@ def app():
 
 
 @pytest.fixture()
-def entry(db_session):
-    entry = journal.Entry.write(
-        title='Test Title',
-        text='Test Entry Text',
-        session=db_session
-    )
-    db_session.flush()
-    return entry
+def homepage(app):
+    response = app.get('/')
+    return response

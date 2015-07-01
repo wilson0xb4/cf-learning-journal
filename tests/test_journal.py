@@ -2,12 +2,42 @@
 from __future__ import unicode_literals
 import os
 import pytest
-from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from pyramid import testing
 from cryptacular.bcrypt import BCRYPTPasswordManager
 
 import journal
+
+os.environ['TESTING'] = "True"
+
+
+@pytest.fixture()
+def entry(db_session):
+    entry = journal.Entry.write(
+        title='Test Title',
+        text='Test Entry Text',
+        session=db_session
+    )
+    db_session.flush()
+    return entry
+
+
+@pytest.fixture(scope='function')
+def auth_req(request):
+    manager = BCRYPTPasswordManager()
+    settings = {
+        'auth.username': 'admin',
+        'auth.password': manager.encode('secret')
+    }
+    testing.setUp(settings=settings)
+    req = testing.DummyRequest()
+
+    def cleanup():
+        testing.tearDown()
+
+    request.addfinalizer(cleanup)
+
+    return req
 
 
 def test_write_entry(db_session):
@@ -99,6 +129,7 @@ def test_listing(app, entry):
 
 
 def test_post_to_add_view(app):
+    test_login_success(app)
     entry_data = {
         'title': 'Hello there',
         'text': 'This is a post'
@@ -106,31 +137,15 @@ def test_post_to_add_view(app):
     response = app.post('/add', params=entry_data, status='3*')
     redirected = response.follow()
     actual = redirected.body
+    print actual
     for expected in entry_data.values():
         assert expected in actual
 
 
 def test_add_no_params(app):
+    test_login_success(app)
     response = app.post('/add', status=500)
     assert 'IntegrityError' in response.body
-
-
-@pytest.fixture(scope='function')
-def auth_req(request):
-    manager = BCRYPTPasswordManager()
-    settings = {
-        'auth.username': 'admin',
-        'auth.password': manager.encode('secret')
-    }
-    testing.setUp(settings=settings)
-    req = testing.DummyRequest()
-
-    def cleanup():
-        testing.tearDown()
-
-    request.addfinalizer(cleanup)
-
-    return req
 
 
 def test_do_login_success(auth_req):

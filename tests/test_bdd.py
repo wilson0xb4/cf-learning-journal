@@ -10,7 +10,7 @@ def test_home_listing_as_anon():
     pass
 
 
-@given('an anonymout user')
+@given('an anonymous user')
 def an_anonymous_user(app):
     pass
 
@@ -29,7 +29,7 @@ def create_entries(db_session):
 
 
 @when('the user visits the homepage')
-def go_to_homepage(app):
+def go_to_homepage(homepage):
     pass
 
 
