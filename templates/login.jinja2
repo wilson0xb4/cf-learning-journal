@@ -3,7 +3,7 @@
 
 
   {% if error -%}
-  <p class="error"><strong>Error</strong>: {{ error }}
+  <p class="error"><strong>Error</strong>: {{ error }}</p>
   {%- endif %}
   <form action="{{ request.route_url('login') }}" method="POST">
 

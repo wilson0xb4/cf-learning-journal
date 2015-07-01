@@ -15,9 +15,7 @@
 
     <h4 class="date">{{ entry.created.strftime('%b. %d, %Y') }}</h4>
 
-    <p>
-      {{ entry.text|safe }}
-    </p>
+    {{ entry.text|safe }}
 
   </article>
 

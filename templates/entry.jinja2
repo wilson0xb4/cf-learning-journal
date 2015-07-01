@@ -5,16 +5,14 @@
       <h3>{{ data.title }}</h3>
       <h4 class="date">{{ data.created.strftime('%b. %d, %Y') }}</h4>
 
-      <p>
-            {{ data.text }}
-      </p>
+        {{ data.text }}
 
       <footer>
             {% if request.authenticated_userid %}
               <a href="{{ request.route_url('update', entry_id=data.id) }}">edit this entry</a> |
             {% endif %}
 
-            Last edited: {{ data.created }} | entry_id: {{ data.id }} |
+            Created on: {{ data.created }} | entry_id: {{ data.id }} |
             <a href="#top">top</a>
       </footer>
 

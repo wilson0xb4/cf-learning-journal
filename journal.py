@@ -96,13 +96,17 @@ def entry_view(request):
 @view_config(route_name='add', renderer='templates/entry_form.jinja2')
 def add_entry(request):
 
-    if request.method == 'POST':
-        title = request.params.get('title')
-        text = request.params.get('text')
-        Entry.write(title=title, text=text)
-        return HTTPFound(request.route_url('home'))
+    if request.authenticated_userid:
 
-    return {'data': {}, 'current': 'add'}
+        if request.method == 'POST':
+            title = request.params.get('title')
+            text = request.params.get('text')
+            Entry.write(title=title, text=text)
+            return HTTPFound(request.route_url('home'))
+
+        return {'data': {}, 'current': 'add'}
+
+    return HTTPFound(request.route_url('login', page='add'))
 
 
 @view_config(
@@ -116,13 +120,17 @@ def update_entry(request):
     except:
         data = {}
 
-    if request.method == 'POST':
-        entry_id = request.params.get('entry_id')
-        title = request.params.get('title', 'not provided?')
-        text = request.params.get('text', 'not provided?')
-        Entry.update_entry(entry_id=entry_id, title=title, text=text)
-        return HTTPFound(request.route_url('home'))
-    return {'data': data, 'current': 'update'}
+    if request.authenticated_userid:
+
+        if request.method == 'POST':
+            entry_id = request.params.get('entry_id')
+            title = request.params.get('title', 'not provided?')
+            text = request.params.get('text', 'not provided?')
+            Entry.update_entry(entry_id=entry_id, title=title, text=text)
+            return HTTPFound(request.route_url('home'))
+        return {'data': data, 'current': 'update'}
+
+    return HTTPFound(request.route_url('login'))
 
 
 @view_config(context=DBAPIError)
@@ -216,10 +224,6 @@ def main():
     config.add_static_view('static', os.path.join(HERE, 'static'))
     config.add_route('home', '/')
     config.add_route('entry', '/entry/{entry_id}')
-
-    # routes for viewing the form
-    # config.add_route('entry_form', '/entry_form')
-    # config.add_route('entry_form:entry_id', '/entry_form/{entry_id}')
 
     # routes to process add / update
     config.add_route('add', '/add')

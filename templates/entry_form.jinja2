@@ -1,7 +1,6 @@
 {% extends "base.jinja2" %}
 {% block body %}
 
-{% if request.authenticated_userid %}
     <form action="{{ request.route_url(current, entry_id=data.id) }}" method="POST">
 
       <h3>{{ current|capitalize }} Journal Entry</h3>
@@ -13,7 +12,7 @@
       <textarea id="text" name="text">{{ data.text|safe }}</textarea>
 
       {% if data.created %}
-      <p>Entry created on: {{ data.created }}</p>
+        <p>Entry created on: {{ data.created }}</p>
       {% endif %}
 
       <input type="hidden" id="entry_id" name="entry_id" value="{{ data.id }}">
@@ -21,18 +20,5 @@
       <button type="submit">{{ current|capitalize }} Entry</button>
 
     </form>
-
-{% else %}
-
-<section>
-
-  <p>
-    Please <a href="{{ request.route_url('login:page', page='entry_form') }}">log in</a>
-    to add or update an entry.
-  </p>
-
-</section>
-
-{% endif %}
 
 {% endblock %}
