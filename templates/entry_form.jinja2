@@ -4,7 +4,7 @@
 {% if request.authenticated_userid %}
     <form action="{{ request.route_url(current, entry_id=data.id) }}" method="POST">
 
-      <h3>Add Journal Entry</h3>
+      <h3>{{ current|capitalize }} Journal Entry</h3>
 
       <label for="entry_name">Entry title:</label>
       <input type="text" id="title" name="title" value="{{ data.title }}">
@@ -13,7 +13,7 @@
       <textarea id="text" name="text">{{ data.text|safe }}</textarea>
 
       {% if data.created %}
-      <p>Last updated on: {{ data.created }}</p>
+      <p>Entry created on: {{ data.created }}</p>
       {% endif %}
 
       <input type="hidden" id="entry_id" name="entry_id" value="{{ data.id }}">
