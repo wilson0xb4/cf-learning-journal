@@ -50,11 +50,16 @@ class Entry(Base):
         if session is None:
             session = DBSession
         row = session.query(cls).get(entry_id)
+        # row.update({
+        #     'title': title,
+        #     'text': text,
+        #     'created': datetime.datetime.utcnow
+        # })
+
         row.title = title
         row.text = text
-        row.created = datetime.datetime.utcnow
-        session.commit(row)
-        # return instance
+        # breaks it? TODO: eventually figure out how to update the date
+        # row.created = datetime.datetime.utcnow
 
     @classmethod
     def all(cls, session=None):
@@ -114,9 +119,9 @@ def add_entry(request):
 @view_config(route_name='update', request_method='POST')
 def update_entry(request):
     entry_id = request.params.get('entry_id')
-    title = request.params.get('title')
-    text = request.params.get('text')
-    Entry.update(id=entry_id, title=title, text=text)
+    title = request.params.get('title', 'not provided?')
+    text = request.params.get('text', 'not provided?')
+    Entry.update_entry(entry_id=entry_id, title=title, text=text)
     return HTTPFound(request.route_url('home'))
 
 
