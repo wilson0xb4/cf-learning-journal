@@ -17,6 +17,18 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
 from cryptacular.bcrypt import BCRYPTPasswordManager
 
+# import mistune
+# import markdown
+# import jinja2
+
+
+# def safe_markdown(text):
+#     return jinja2.Markup(markdown.markdown(text, output_format='html5'))
+
+# env = jinja2.Environment()
+# env.filters['markdown'] = safe_markdown
+
+
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
 
@@ -89,6 +101,8 @@ def entry_view(request):
 
     if data is None:
         return HTTPFound(request.route_url('404'))
+
+    # html_text = jinja2.Markup(markdown(data.text, output_format='html5'))
 
     return {'data': data}
 
