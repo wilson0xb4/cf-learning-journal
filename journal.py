@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import os
 import datetime
-
+import re
 from pyramid.config import Configurator
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
@@ -16,17 +16,11 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import scoped_session, sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
 from cryptacular.bcrypt import BCRYPTPasswordManager
+from pygments import highlight
+from pygments.lexers.python import PythonLexer
+from pygments.formatters.html import HtmlFormatter
 
-# import mistune
-# import markdown
-# import jinja2
-
-
-# def safe_markdown(text):
-#     return jinja2.Markup(markdown.markdown(text, output_format='html5'))
-
-# env = jinja2.Environment()
-# env.filters['markdown'] = safe_markdown
+from markdown import markdown
 
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -81,6 +75,24 @@ class Entry(Base):
             session = DBSession
         return session.query(cls).get(entry_id)
 
+    @classmethod
+    def one(cls, eid=None, session=None):
+        if session is None:
+            session = DBSession
+        return session.query(cls).filter(cls.id == eid).one()
+
+    @classmethod
+    def make_md(cls, text):
+        html_text = markdown(text, output_format='html5')
+
+        def my_highlight(matchobj):
+            return highlight(matchobj.group(0), PythonLexer(), HtmlFormatter())
+
+        pattern = r'(?<=<code>)[\s\S]*(?=<\/code>)'
+        html_text = re.sub(pattern, my_highlight, html_text)
+
+        return html_text
+
 
 def init_db():
     engine = sa.create_engine(DATABASE_URL, echo=True)
@@ -90,21 +102,33 @@ def init_db():
 @view_config(route_name='home', renderer='templates/list.jinja2')
 def list_view(request):
     entries = Entry.all()
+
+    for entry in entries:
+        entry.text = Entry.make_md(entry.text)
+
     return {'entries': entries, 'current': 'list'}
 
 
 @view_config(route_name='entry', renderer='templates/entry.jinja2')
 def entry_view(request):
 
+    # entry = Entry.one(request.matchdict['entry_id'])
     entry_id = request.matchdict['entry_id']
     data = Entry.get_entry(entry_id)
 
     if data is None:
         return HTTPFound(request.route_url('404'))
 
-    # html_text = jinja2.Markup(markdown(data.text, output_format='html5'))
-
-    return {'data': data}
+    html_text = Entry.make_md(data.text)
+    # return {'data': entry}
+    return {
+        'data': {
+            'id': data.id,
+            'title': data.title,
+            'text': html_text,
+            'created': data.created
+        }
+    }
 
 
 @view_config(route_name='add', renderer='templates/entry_form.jinja2')
