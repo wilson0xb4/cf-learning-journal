@@ -102,33 +102,19 @@ def init_db():
 @view_config(route_name='home', renderer='templates/list.jinja2')
 def list_view(request):
     entries = Entry.all()
-
-    for entry in entries:
-        entry.text = Entry.make_md(entry.text)
-
     return {'entries': entries, 'current': 'list'}
 
 
 @view_config(route_name='entry', renderer='templates/entry.jinja2')
 def entry_view(request):
 
-    # entry = Entry.one(request.matchdict['entry_id'])
     entry_id = request.matchdict['entry_id']
     data = Entry.get_entry(entry_id)
 
     if data is None:
         return HTTPFound(request.route_url('404'))
 
-    html_text = Entry.make_md(data.text)
-    # return {'data': entry}
-    return {
-        'data': {
-            'id': data.id,
-            'title': data.title,
-            'text': html_text,
-            'created': data.created
-        }
-    }
+    return {'data': data}
 
 
 @view_config(route_name='add', renderer='templates/entry_form.jinja2')
