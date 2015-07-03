@@ -6,7 +6,7 @@
       <h3>{{ current|capitalize }} Journal Entry</h3>
 
       <label for="entry_name">Entry title:</label>
-      <input type="text" id="title" name="title" value="{{ data.title }}">
+      <input type="text" id="title" name="title" value="{{ data.title }}" autofocus>
 
       <label for="entry_text">Entry text:</label>
       <textarea id="text" name="text">{{ data.text|safe }}</textarea>
