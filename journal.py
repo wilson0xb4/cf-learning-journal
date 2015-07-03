@@ -9,18 +9,24 @@ from markdown import markdown
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.httpexceptions import (
+    HTTPFound,
+    HTTPNotFound,
+    HTTPForbidden
+)
+from pyramid.response import Response
 from pyramid.security import remember, forget
-from pyramid.view import view_config
+from pyramid.view import (
+    view_config,
+    notfound_view_config,
+    forbidden_view_config
+)
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import scoped_session, sessionmaker
 from waitress import serve
 from zope.sqlalchemy import ZopeTransactionExtension
-
-from pyramid.view import notfound_view_config
-from pyramid.response import Response
 
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -110,17 +116,16 @@ def entry_view(request):
 @view_config(route_name='add', renderer='templates/entry_form.jinja2')
 def add_entry(request):
 
-    if request.authenticated_userid:
+    if not request.authenticated_userid:
+        raise HTTPForbidden
 
-        if request.method == 'POST':
-            title = request.params.get('title')
-            text = request.params.get('text')
-            Entry.write(title=title, text=text)
-            return HTTPFound(request.route_url('home'))
+    if request.method == 'POST':
+        title = request.params.get('title')
+        text = request.params.get('text')
+        Entry.write(title=title, text=text)
+        return HTTPFound(request.route_url('home'))
 
-        return {'data': {}, 'current': 'add'}
-
-    return HTTPFound(request.route_url('login', page='add'))
+    return {'data': {}, 'current': 'add'}
 
 
 @view_config(
@@ -128,30 +133,38 @@ def add_entry(request):
     renderer='templates/entry_form.jinja2')
 def update_entry(request):
 
-    if request.authenticated_userid:
+    if not request.authenticated_userid:
+        raise HTTPForbidden
 
-        entry_id = request.matchdict['entry_id']
-        data = Entry.get_entry(entry_id)
+    entry_id = request.matchdict['entry_id']
+    data = Entry.get_entry(entry_id)
 
-        if data is None:
-            raise HTTPNotFound
+    if data is None:
+        raise HTTPNotFound
 
-        if request.method == 'POST':
-            entry_id = request.params.get('entry_id')
-            title = request.params.get('title', 'not provided?')
-            text = request.params.get('text', 'not provided?')
-            Entry.update_entry(entry_id=entry_id, title=title, text=text)
-            return HTTPFound(request.route_url('home'))
+    if request.method == 'POST':
+        entry_id = request.params.get('entry_id')
+        title = request.params.get('title', 'not provided?')
+        text = request.params.get('text', 'not provided?')
+        Entry.update_entry(entry_id=entry_id, title=title, text=text)
+        return HTTPFound(request.route_url('home'))
 
-        return {'data': data, 'current': 'update'}
-
-    return HTTPFound(request.route_url('login'))
+    return {'data': data, 'current': 'update'}
 
 
 @notfound_view_config(renderer='templates/404.jinja2')
 def notfound(request):
+    """custom 404 view"""
     request.response.status = 404
     return {}
+
+
+@forbidden_view_config(renderer='templates/login.jinja2')
+def forbidden(request):
+    """custom 401 view"""
+    request.response.status = 401
+    error = '401 Unauthorized'
+    return {'error': error}
 
 
 @view_config(context=DBAPIError)

@@ -124,6 +124,15 @@ article p {
   margin: 25px 0;
 }
 
+p.error {
+  padding: 10px;
+  background-color: rgba(255,0,0,.3);
+  border-style: solid;
+  border-color: rgb(255,0,0);
+  border-right: none;
+  border-left: none;
+}
+
 input[type="text"],
 input[type="password"],
 textarea {
