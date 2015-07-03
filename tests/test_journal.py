@@ -253,6 +253,8 @@ def test_view_entry_invalid(app):
     expected = 'Test Title'
     assert expected not in actual
 
+TITLE_FIELD = ('id="title" name="title" value="Test Title" autofocus>')
+
 
 def test_view_update_form_valid(app, entry):
     """Check if the update form is correctly populated with the entry"""
@@ -260,7 +262,7 @@ def test_view_update_form_valid(app, entry):
     response = app.get('/update/' + unicode(entry.id))
     assert response.status_code == 200
     actual = response.body
-    expected = '<input type="text" id="title" name="title" value="Test Title">'
+    expected = TITLE_FIELD
     assert expected in actual
 
 
@@ -270,7 +272,7 @@ def test_view_update_invalid_entry(app):
     response = app.get('/update/999', status=404)
     assert response.status_code == 404
     actual = response.body
-    expected = '<input type="text" id="title" name="title" value="Test Title">'
+    expected = TITLE_FIELD
     assert expected not in actual
 
 
