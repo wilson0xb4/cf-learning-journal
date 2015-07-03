@@ -175,16 +175,10 @@ def db_exception(context, request):
 
 
 @view_config(route_name='login', renderer="templates/login.jinja2")
-@view_config(route_name='login:page', renderer="templates/login.jinja2")
 def login(request):
     """authenticate a user by username/password"""
     username = request.params.get('username', '')
     error = ''
-
-    try:
-        next_page = request.matchdict['page']
-    except:
-        next_page = request.params.get('next_page', 'home')
 
     if request.method == 'POST':
         error = "Login Failed"
@@ -196,10 +190,9 @@ def login(request):
 
         if authenticated:
             headers = remember(request, username)
-            return HTTPFound(request.route_url(next_page), headers=headers)
+            return HTTPFound(request.route_url('home'), headers=headers)
 
-    return {'error': error, 'username': username,
-            'next_page': next_page, 'current': 'login'}
+    return {'error': error, 'username': username, 'current': 'login'}
 
 
 @view_config(route_name='logout')
@@ -263,7 +256,6 @@ def main():
     config.add_route('update', '/update/{entry_id}')
 
     config.add_route('login', '/login')
-    config.add_route('login:page', '/login/{page}')
     config.add_route('logout', '/logout')
 
     config.scan()

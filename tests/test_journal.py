@@ -136,10 +136,9 @@ def test_post_to_add_view_no_auth(app):
         'title': 'Hello there',
         'text': 'This is a post'
     }
-    response = app.post('/add', params=entry_data, status='3*')
-    assert response.status_code == 302
-    redirected = response.follow()
-    actual = redirected.body
+    response = app.post('/add', params=entry_data, status='401 Unauthorized')
+    assert response.status_code == 401
+    actual = response.body
     assert '<h2>Login</h2>' in actual
     for expected in entry_data.values():
         assert expected not in actual
