@@ -76,12 +76,6 @@ class Entry(Base):
         return session.query(cls).get(entry_id)
 
     @classmethod
-    def one(cls, eid=None, session=None):
-        if session is None:
-            session = DBSession
-        return session.query(cls).filter(cls.id == eid).one()
-
-    @classmethod
     def make_md(cls, text):
         return markdown(
             text,

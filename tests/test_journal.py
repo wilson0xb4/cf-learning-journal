@@ -237,31 +237,54 @@ def test_logout(app):
     assert INPUT_BTN not in actual
 
 
-def test_view_entry_valid(app):
+def test_view_entry_valid(app, entry):
     """View entry that exists."""
-    assert False
+    response = app.get('/entry/' + unicode(entry.id), status=200)
+    assert response.status_code == 200
+    actual = response.body
+    expected = 'Test Title'
+    assert expected in actual
 
 
-def test_detail_view_invalid_entry(app):
+def test_view_entry_invalid(app):
     """View entry that does not exist."""
-    response = app.get('/entry/999')
+    response = app.get('/entry/999', status=404)
     assert response.status_code == 404
     actual = response.body
-    for field in ['title', 'text']:
-        expected = getattr(entry, field, 'absent')
-        assert expected in actual
+    expected = 'Test Title'
+    assert expected not in actual
 
 
-def test_update_view_invalid_entry(app):
-    """View entry that does not exist."""
-    response = app.get('/update/999')
-    assert response.status_code == 404
-    actual = response.body
-    for field in ['title', 'text']:
-        expected = getattr(entry, field, 'absent')
-        assert expected in actual
-
-
-def test_view_update_form_valid(app):
+def test_view_update_form_valid(app, entry):
     """Check if the update form is correctly populated with the entry"""
-    assert False
+    test_login_success(app)
+    response = app.get('/update/' + unicode(entry.id))
+    assert response.status_code == 200
+    actual = response.body
+    expected = '<input type="text" id="title" name="title" value="Test Title">'
+    assert expected in actual
+
+
+def test_view_update_invalid_entry(app):
+    """Try to update an entry that doesn't exist."""
+    test_login_success(app)
+    response = app.get('/update/999', status=404)
+    assert response.status_code == 404
+    actual = response.body
+    expected = '<input type="text" id="title" name="title" value="Test Title">'
+    assert expected not in actual
+
+
+def test_make_md():
+    """simple test of make_md, just checking for <li> elements"""
+    submitted_text = '* one\r* two\r* three'
+    md_text = journal.Entry.make_md(submitted_text)
+    expected_md = '<ul>\n<li>one</li>\n<li>two</li>\n<li>three</li>\n</ul>'
+    assert expected_md == md_text
+
+
+def test_get_entry(db_session, entry):
+    """test return of getting a single entry by its id"""
+    entry = journal.Entry.get_entry(entry.id, session=db_session)
+    assert entry.title == 'Test Title'
+    assert entry.text == 'Test Entry Text'
