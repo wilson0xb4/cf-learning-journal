@@ -1,26 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from __future__ import print_function
 import os
 import datetime
-# import re
-from pyramid.config import Configurator
-from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
+
+from cryptacular.bcrypt import BCRYPTPasswordManager
+from markdown import markdown
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.config import Configurator
+from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember, forget
-from waitress import serve
+from pyramid.view import view_config
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import scoped_session, sessionmaker
+from waitress import serve
 from zope.sqlalchemy import ZopeTransactionExtension
-from cryptacular.bcrypt import BCRYPTPasswordManager
-# from pygments import highlight
-# from pygments.lexers.python import PythonLexer
-# from pygments.formatters.html import HtmlFormatter
-
-from markdown import markdown
 
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
