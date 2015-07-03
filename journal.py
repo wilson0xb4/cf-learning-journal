@@ -9,7 +9,7 @@ from markdown import markdown
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.security import remember, forget
 from pyramid.view import view_config
 import sqlalchemy as sa
@@ -18,6 +18,9 @@ from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import scoped_session, sessionmaker
 from waitress import serve
 from zope.sqlalchemy import ZopeTransactionExtension
+
+from pyramid.view import notfound_view_config
+from pyramid.response import Response
 
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -105,7 +108,7 @@ def entry_view(request):
     data = Entry.get_entry(entry_id)
 
     if data is None:
-        return HTTPFound(request.route_url('404'))
+        raise HTTPNotFound
 
     return {'data': data}
 
@@ -137,7 +140,7 @@ def update_entry(request):
         data = Entry.get_entry(entry_id)
 
         if data is None:
-            return HTTPFound(request.route_url('404'))
+            raise HTTPNotFound
 
         if request.method == 'POST':
             entry_id = request.params.get('entry_id')
@@ -151,15 +154,14 @@ def update_entry(request):
     return HTTPFound(request.route_url('login'))
 
 
-@view_config(route_name='404', renderer='templates/404.jinja2')
-def error_404_view(request):
-    # TODO: set proper headers
+@notfound_view_config(renderer='templates/404.jinja2')
+def notfound(request):
+    request.response.status = 404
     return {}
 
 
 @view_config(context=DBAPIError)
 def db_exception(context, request):
-    from pyramid.response import Response
     response = Response(context.message)
     response.status_int = 500
     return response
@@ -256,9 +258,6 @@ def main():
     config.add_route('login', '/login')
     config.add_route('login:page', '/login/{page}')
     config.add_route('logout', '/logout')
-
-    # error routes
-    config.add_route('404', '/404')
 
     config.scan()
     app = config.make_wsgi_app()
