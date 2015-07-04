@@ -46,3 +46,15 @@ def app():
 def homepage(app):
     response = app.get('/')
     return response
+
+
+@pytest.fixture()
+def add_page(app):
+    response = app.get('/add')
+    return response
+
+
+@pytest.fixture()
+def update_page(app, entry):
+    response = app.get('/update/' + unicode(entry.id))
+    return response

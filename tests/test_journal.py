@@ -214,7 +214,6 @@ def test_login_success(app):
     response = redirect.follow()
     assert response.status_code == 200
     actual = response.body
-    print(actual)
     assert INPUT_BTN in actual
 
 
