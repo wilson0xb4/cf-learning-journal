@@ -71,7 +71,7 @@ class Entry(Base):
     def all(cls, session=None):
         if session is None:
             session = DBSession
-        return session.query(cls).order_by(cls.created.desc()).all()
+        return session.query(cls).order_by(cls.id.desc()).all()
 
     @classmethod
     def get_entry(cls, entry_id, session=None):
