@@ -278,7 +278,8 @@ def test_view_update_invalid_entry(app):
 def test_make_md():
     """simple test of make_md, just checking for <li> elements"""
     submitted_text = '* one\r* two\r* three'
-    md_text = journal.Entry.make_md(submitted_text)
+    entry = journal.Entry(text=submitted_text)
+    md_text = entry.make_md()
     expected_md = '<ul>\n<li>one</li>\n<li>two</li>\n<li>three</li>\n</ul>'
     assert expected_md == md_text
 

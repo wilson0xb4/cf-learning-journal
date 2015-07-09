@@ -81,10 +81,9 @@ class Entry(Base):
             session = DBSession
         return session.query(cls).get(entry_id)
 
-    @classmethod
-    def make_md(cls, text):
+    def make_md(self):
         return markdown(
-            text,
+            self.text,
             output_format='html5',
             extensions=['codehilite', 'fenced_code']
         )
