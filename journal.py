@@ -65,7 +65,6 @@ class Entry(Base):
 
         row.title = title
         row.text = text
-        # breaks it? TODO: eventually figure out how to update the date
         row.created = datetime.datetime.utcnow()
 
     @classmethod
