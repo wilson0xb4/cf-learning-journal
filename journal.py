@@ -80,6 +80,7 @@ class Entry(Base):
             session = DBSession
         return session.query(cls).get(entry_id)
 
+    @property
     def make_md(self):
         return markdown(
             self.text,
