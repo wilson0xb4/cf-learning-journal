@@ -159,8 +159,8 @@ def test_post_to_add_view(app):
 
 def test_add_no_params(app):
     test_login_success(app)
-    response = app.post('/add', status=500)
-    assert 'IntegrityError' in response.body
+    response = app.post('/add', status=200)
+    assert 'may not be empty!' in response.body
 
 
 def test_do_login_success(auth_req):
@@ -252,7 +252,7 @@ def test_view_entry_invalid(app):
     expected = 'Test Title'
     assert expected not in actual
 
-TITLE_FIELD = ('id="title" name="title" value="Test Title" autofocus>')
+TITLE_FIELD = ('id="title" name="title" value="Test Title"')
 
 
 def test_view_update_form_valid(app, entry):

@@ -118,13 +118,31 @@ def add_entry(request):
     if not request.authenticated_userid:
         raise HTTPForbidden
 
+    data = {}
+    error = ""
+
     if request.method == 'POST':
         title = request.params.get('title')
         text = request.params.get('text')
-        Entry.write(title=title, text=text)
-        return HTTPFound(request.route_url('home'))
 
-    return {'data': {}, 'current': 'add'}
+        if title is None or text is None:
+            # form submit with no parameters (webtest POST)
+            error = "'Entry title' and 'Entry text' may not be empty!"
+        else:
+            # otherwise strip the data so we don't save whitespace in db
+            title = title.strip()
+            text = text.strip()
+
+        if not title or not text:
+            # prevent white space submissions
+            error = "'Entry title' and 'Entry text' may not be empty!"
+            data['title'] = title
+            data['text'] = text
+        else:
+            Entry.write(title=title, text=text)
+            return HTTPFound(request.route_url('home'))
+
+    return {'data': data, 'current': 'add', 'error': error}
 
 
 @view_config(
@@ -137,18 +155,32 @@ def update_entry(request):
 
     entry_id = request.matchdict['entry_id']
     data = Entry.get_entry(entry_id)
+    error = ""
 
     if data is None:
         raise HTTPNotFound
 
     if request.method == 'POST':
         entry_id = request.params.get('entry_id')
-        title = request.params.get('title', 'not provided?')
-        text = request.params.get('text', 'not provided?')
-        Entry.update_entry(entry_id=entry_id, title=title, text=text)
-        return HTTPFound(request.route_url('home'))
+        title = request.params.get('title')
+        text = request.params.get('text')
 
-    return {'data': data, 'current': 'update'}
+        if title is None or text is None:
+            # form submit with no parameters (webtest POST)
+            error = "'Entry title' and 'Entry text' may not be empty!"
+        else:
+            # otherwise strip the data so we don't save whitespace in db
+            title = title.strip()
+            text = text.strip()
+
+        if not title or not text:
+            # prevent white space submissions
+            error = "'Entry title' and 'Entry text' may not be empty!"
+        else:
+            Entry.update_entry(entry_id=entry_id, title=title, text=text)
+            return HTTPFound(request.route_url('home'))
+
+    return {'data': data, 'current': 'update', 'error': error}
 
 
 @notfound_view_config(renderer='templates/404.jinja2')
