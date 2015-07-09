@@ -89,6 +89,10 @@ form, section, article {
   border-radius: 8px;
 }
 
+div.codehilite {
+  overflow: scroll;
+}
+
 #entries {
   list-style: none;
   padding: 0;
