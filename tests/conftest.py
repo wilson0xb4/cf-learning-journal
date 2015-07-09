@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import os
 import pytest
 from sqlalchemy import create_engine
@@ -56,5 +59,5 @@ def add_page(app):
 
 @pytest.fixture()
 def update_page(app, entry):
-    response = app.get('/update/' + unicode(entry.id))
+    response = app.get('/update/' + entry.id)
     return response
