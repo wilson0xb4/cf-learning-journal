@@ -9,7 +9,7 @@
 
       <footer>
             {% if request.authenticated_userid %}
-              <a href="{{ request.route_url('update', entry_id=data.id) }}">edit this entry</a> |
+              <a id="edit_link" href="{{ request.route_url('update', entry_id=data.id) }}">edit this entry</a> |
             {% endif %}
 
             Created on: {{ data.created }} | entry_id: {{ data.id }} |

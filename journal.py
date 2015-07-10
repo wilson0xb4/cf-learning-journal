@@ -49,6 +49,14 @@ class Entry(Base):
         sa.DateTime, nullable=False, default=datetime.datetime.utcnow
     )
 
+    def __json__(self, request):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'text': self.text,
+            'created': self.created.isoformat()
+        }
+
     @classmethod
     def write(cls, title=None, text=None, session=None):
         if session is None:

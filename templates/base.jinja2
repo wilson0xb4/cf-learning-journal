@@ -15,12 +15,12 @@
 
       <nav>
         <ul>
-          <li {% if current=='list' %}class="current"{% endif %}><a href="{{ request.route_url('home') }}">Entries</a></li>
+          <li id="list" {% if current=='list' %}class="current"{% endif %}><a href="{{ request.route_url('home') }}">Entries</a></li>
 
         {% if not request.authenticated_userid %}
-          <li {% if current=='login' %}class="current"{% endif %}><a href="{{ request.route_url('login') }}">log in</a></li>
+          <li id="login" {% if current=='login' %}class="current"{% endif %}><a href="{{ request.route_url('login') }}">log in</a></li>
         {% else %}
-          <li {% if current=='add' %}class="current"{% endif %}><a href="{{ request.route_url('add') }}">New Entry</a></li>
+          <li id="add" {% if current=='add' %}class="current"{% endif %}><a href="{{ request.route_url('add') }}">New Entry</a></li>
           <li><a href="{{ request.route_url('logout') }}">log out</a></li>
         {% endif %}
 
@@ -28,7 +28,9 @@
       </nav>
     </header>
 
+    <div id="ajax-container">
     {% block body %}{% endblock %}
+    </div>
 
     <footer>
       <p>
@@ -39,5 +41,9 @@
       <hr>
       <p>&copy; 2015 Andrew Wilson</p>
     </footer>
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/app.js"></script>
   </body>
 </html>
